@@ -146,10 +146,11 @@
     _popoverLbl.backgroundColor = [UIColor colorWithRed:0.2667 green:0.5255 blue:0.7020 alpha:1];
     _popoverLbl.text = text;
     _popoverLbl.textAlignment = NSTextAlignmentCenter;
-    _popoverLbl.layer.cornerRadius = 8;
+    _popoverLbl.numberOfLines = 2;
+    _popoverLbl.layer.cornerRadius = 6;
     _popoverLbl.textColor = [UIColor whiteColor];
-    _popoverLbl.font = [UIFont systemFontOfSize:13];
-    _popoverLbl.size = CGRectInset([_popoverLbl textRectForBounds:CGRectInfinite limitedToNumberOfLines:0], -8, -4).size;
+    _popoverLbl.font = [UIFont systemFontOfSize:10];
+    _popoverLbl.size = CGRectInset([_popoverLbl textRectForBounds:CGRectInfinite limitedToNumberOfLines:2], -8, -4).size;
     _popoverLbl.centerX = view.centerX;
     if (_popoverLbl.left < 0) {
         _popoverLbl.left = 0;
@@ -170,7 +171,7 @@
     NSString *key = [NSString stringWithFormat:@"%d/%02d/%02d", comps.year, comps.month, day];
     NSString *text = _model[key];
     if ([text length]) {
-        [self showPopover:text at:gesture.view];
+        [self showPopover:[NSString stringWithFormat:NSLocalizedString(@"还款金额\n%@", nil), text] at:gesture.view];
     }
 }
 
