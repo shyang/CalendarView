@@ -10,9 +10,7 @@
 
 @interface NSDate (Additions)
 
-- (NSDate *)tomorrow;
-- (NSDate *)yesterday;
-- (NSUInteger)firstWeekdayInSameMonth;
-- (NSUInteger)daysInSameMonth;
+- (NSDate *)nextMonth;
+- (NSDate *)previousMonth;
 
 @end

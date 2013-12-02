@@ -10,6 +10,6 @@
 
 @interface TTCalendarView : UIView
 
-- (void)pickDate:(NSDate *)date;
+- (void)setObject:(id)item;
 
 @end

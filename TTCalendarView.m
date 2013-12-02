@@ -15,6 +15,8 @@
     UILabel *_monthLbl;
     UILabel *_yearLbl;
     NSDate *_date;
+    id _model;
+    UILabel *_popoverLbl;
 }
 
 - (id)initWithFrame:(CGRect)frame {
@@ -25,7 +27,6 @@
 
         UIButton *leftBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 44, 44)];
         [leftBtn setImage:[UIImage imageNamed:@"BackArrow"] forState:UIControlStateNormal];
-        leftBtn.borderColor = [UIColor blueColor];
         [leftBtn addTarget:self action:@selector(leftTapped) forControlEvents:UIControlEventTouchUpInside];
         [bar addSubview:leftBtn];
 
@@ -33,18 +34,21 @@
         [rightBtn setImage:[UIImage imageNamed:@"NextArrow"] forState:UIControlStateNormal];
         rightBtn.right = self.width;
         rightBtn.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
-        rightBtn.borderColor = [UIColor blueColor];
         [rightBtn addTarget:self action:@selector(rightTapped) forControlEvents:UIControlEventTouchUpInside];
         [bar addSubview:rightBtn];
 
         _monthLbl = [[UILabel alloc] initWithFrame:CGRectMake(leftBtn.right, 0, rightBtn.left - leftBtn.right, bar.height / 2)];
         _monthLbl.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         _monthLbl.textAlignment = NSTextAlignmentCenter;
+        _monthLbl.textColor = [UIColor colorWithRed:0.2667 green:0.5255 blue:0.7020 alpha:1];
+        _monthLbl.backgroundColor = [UIColor clearColor];
         [bar addSubview:_monthLbl];
 
         _yearLbl = [[UILabel alloc] initWithFrame:CGRectMake(_monthLbl.left, _monthLbl.bottom, _monthLbl.width, bar.height / 2)];
         _yearLbl.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         _yearLbl.textAlignment = NSTextAlignmentCenter;
+        _yearLbl.textColor = [UIColor lightGrayColor];
+        _yearLbl.backgroundColor = [UIColor clearColor];
         [bar addSubview:_yearLbl];
 
         UIView *weekDayView = [[UIView alloc] initWithFrame:CGRectMake(0, bar.bottom, self.width, 30)];
@@ -64,6 +68,8 @@
                 NSLocalizedString(@"周五", nil),
                 NSLocalizedString(@"周六", nil),
             ][i];
+            lbl.backgroundColor = [UIColor clearColor];
+            lbl.textColor = [UIColor colorWithRed:0.2667 green:0.5255 blue:0.7020 alpha:1];
             lbl.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
             [weekDayView addSubview:lbl];
         }
@@ -80,38 +86,117 @@
                 lbl.layer.cornerRadius = 17;
                 lbl.borderColor = [UIColor grayColor];
                 lbl.textAlignment = NSTextAlignmentCenter;
+                lbl.userInteractionEnabled = YES;
+                [lbl addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dayTapped:)]];
                 [self addSubview:lbl];
                 [_dayViews addObject:lbl];
             }
         }
+        [self pickMonth:[NSDate date]];
 
-        self.borderColor = [UIColor redColor];
-        [self pickDate:[NSDate date]];
+        UISwipeGestureRecognizer *swipLeft = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(leftTapped)];
+        swipLeft.direction = UISwipeGestureRecognizerDirectionLeft;
+        [self addGestureRecognizer:swipLeft];
+
+        UISwipeGestureRecognizer *swipRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(rightTapped)];
+        swipRight.direction = UISwipeGestureRecognizerDirectionRight;
+        [self addGestureRecognizer:swipRight];
+
+        // app specific
+        UIView *sepLine = [[UIView alloc] initWithFrame:CGRectMake(10, 0, self.width - 10, 1)];
+        sepLine.backgroundColor = [UIColor lightGrayColor];
+        sepLine.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
+        sepLine.bottom = self.height - 10;
+        [self addSubview:sepLine];
     }
     return self;
 }
 
 - (void)leftTapped {
-    [self pickDate:[_date yesterday]];
+    [self hidePopover];
+
+    [UIView animateWithDuration:.2 animations:^{
+        for (UIView *view in _dayViews) {
+            view.alpha = 0;
+        }
+    } completion:^(BOOL finished) {
+        [self pickMonth:[_date previousMonth]];
+    }];
 }
 
 - (void)rightTapped {
-    [self pickDate:[_date tomorrow]];
+    [self hidePopover];
+
+    [UIView animateWithDuration:.2 animations:^{
+        for (UIView *view in _dayViews) {
+            view.alpha = 0;
+        }
+    } completion:^(BOOL finished) {
+        [self pickMonth:[_date nextMonth]];
+    }];
 }
 
-- (void)pickDate:(NSDate *)date {
-    _date = date;
+- (void)hidePopover {
+    [_popoverLbl removeFromSuperview];
+    _popoverLbl = nil;
+}
 
+- (void)showPopover:(NSString *)text at:(UIView *)view {
+    _popoverLbl = [[UILabel alloc] init];
+    _popoverLbl.backgroundColor = [UIColor colorWithRed:0.2667 green:0.5255 blue:0.7020 alpha:1];
+    _popoverLbl.text = text;
+    _popoverLbl.textAlignment = NSTextAlignmentCenter;
+    _popoverLbl.layer.cornerRadius = 8;
+    _popoverLbl.textColor = [UIColor whiteColor];
+    _popoverLbl.font = [UIFont systemFontOfSize:13];
+    _popoverLbl.size = CGRectInset([_popoverLbl textRectForBounds:CGRectInfinite limitedToNumberOfLines:0], -8, -4).size;
+    _popoverLbl.centerX = view.centerX;
+    if (_popoverLbl.left < 0) {
+        _popoverLbl.left = 0;
+    }
+    if (_popoverLbl.right > self.width) {
+        _popoverLbl.right = self.width;
+    }
+    _popoverLbl.bottom = view.top - 3;
+    [self addSubview:_popoverLbl];
+}
+
+- (void)dayTapped:(UITapGestureRecognizer *)gesture {
+    [self hidePopover];
+
+    int day = gesture.view.tag;
     NSCalendar *calendar= [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
-    NSDateComponents *comps = [calendar components:NSCalendarUnitYear | NSCalendarUnitMonth |  NSCalendarUnitDay fromDate:date];
+    NSDateComponents *comps = [calendar components:NSCalendarUnitYear | NSCalendarUnitMonth fromDate:_date];
+    NSString *key = [NSString stringWithFormat:@"%d/%02d/%02d", comps.year, comps.month, day];
+    NSString *text = _model[key];
+    if ([text length]) {
+        [self showPopover:text at:gesture.view];
+    }
+}
 
-    _yearLbl.text = [NSString stringWithFormat:@"%u", comps.year];
+- (void)pickMonth:(NSDate *)date {
+    NSCalendar *calendar= [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    NSDateComponents *comps = [calendar components:NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay fromDate:date];
+    if (comps.day == 1) {
+        _date = date;
+    } else {
+        NSDateComponents *backToDay1 = [[NSDateComponents alloc] init];
+        backToDay1.day = 1 - comps.day;
+        _date = [calendar dateByAddingComponents:backToDay1 toDate:date options:0]; // always the first day of a month
+    }
+
+    _yearLbl.text = [NSString stringWithFormat:@"%d", comps.year];
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
 
     NSString *lang = [[NSUserDefaults standardUserDefaults] stringForKey:kPersistPreferredLanguage];
     formatter.locale = [NSLocale localeWithLocaleIdentifier:lang];
     _monthLbl.text = [formatter shortMonthSymbols][comps.month - 1];
-    NSUInteger weekday = [date firstWeekdayInSameMonth];
+    NSInteger weekday = [calendar components:NSCalendarUnitWeekday fromDate:_date].weekday;
+
+    NSDate *today = [NSDate date];
+    NSDateComponents *compsToday = [calendar components:NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay fromDate:today];
+
+    NSUInteger totalDays = [calendar rangeOfUnit:NSCalendarUnitDay inUnit:NSCalendarUnitMonth forDate:_date].length;
 
     CGFloat height = 0;
     for (int i = 0; i < [_dayViews count]; ++i) {
@@ -121,20 +206,52 @@
             continue;
         }
         lbl.hidden = NO;
+        lbl.alpha = 1;
+
         NSUInteger day = i - (weekday - 1) + 1;
         lbl.text = [NSString stringWithFormat:@"%d", day];
-        if (comps.day == day) {
-            lbl.layer.borderWidth = 3;
+
+        // four sytle of a day label: past or future, has repayment or not
+        NSString *key = [NSString stringWithFormat:@"%d/%02d/%02d", comps.year, comps.month, day];
+        NSString *text = _model[key];
+        lbl.tag = day; // to recontruct a date
+
+        if ([_date compare:today] == NSOrderedDescending || (comps.year == compsToday.year && comps.month == compsToday.month && day > compsToday.day)) {
+            lbl.backgroundColor = [UIColor clearColor];
+            lbl.textColor = lbl.borderColor = [UIColor colorWithWhite:0.2667 alpha:1];
+            if ([text length]) {
+                lbl.borderColor = lbl.textColor = [UIColor colorWithRed:0.2667 green:0.5255 blue:0.7020 alpha:1];
+                lbl.layer.borderWidth = 3;
+            } else {
+                lbl.borderColor = lbl.textColor = [UIColor colorWithWhite:0.2667 alpha:1];
+            }
         } else {
-            lbl.layer.borderWidth = 1;
+            lbl.layer.borderWidth = 0;
+            if ([text length]) {
+                lbl.backgroundColor = [UIColor colorWithRed:0.2667 green:0.5255 blue:0.7020 alpha:1];
+                lbl.textColor = [UIColor whiteColor];
+            } else {
+                lbl.backgroundColor = [UIColor colorWithRed:0.8627 green:0.8784 blue:0.8863 alpha:1];
+                lbl.textColor = [UIColor colorWithWhite:0.5725 alpha:1];
+            }
         }
-        if (day > [date daysInSameMonth]) {
+        if (day > totalDays) {
             lbl.hidden = YES;
         } else {
             height = lbl.bottom + 7; // (49 - 35) / 2
         }
     }
-    self.height = height;
+    self.height = height + 20; // this extra padding is app specific
+
+    if ([self.superview isKindOfClass:[UITableView class]] && [(UITableView *)self.superview tableHeaderView] == self) {
+        [(UITableView *)self.superview setTableHeaderView:self];
+    }
+}
+
+#pragma mark - Public
+- (void)setObject:(id)item {
+    _model = item;
+    [self pickMonth:_date];
 }
 
 @end
