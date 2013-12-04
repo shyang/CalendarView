@@ -94,11 +94,11 @@
         }
         [self pickMonth:[NSDate date]];
 
-        UISwipeGestureRecognizer *swipLeft = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(leftTapped)];
+        UISwipeGestureRecognizer *swipLeft = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(rightTapped)];
         swipLeft.direction = UISwipeGestureRecognizerDirectionLeft;
         [self addGestureRecognizer:swipLeft];
 
-        UISwipeGestureRecognizer *swipRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(rightTapped)];
+        UISwipeGestureRecognizer *swipRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(leftTapped)];
         swipRight.direction = UISwipeGestureRecognizerDirectionRight;
         [self addGestureRecognizer:swipRight];
 
