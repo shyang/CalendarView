@@ -17,6 +17,7 @@
     NSDate *_date;
     id _model;
     UILabel *_popoverLbl;
+    UIImageView *_arrow;
 }
 
 - (id)initWithFrame:(CGRect)frame {
@@ -139,6 +140,9 @@
 - (void)hidePopover {
     [_popoverLbl removeFromSuperview];
     _popoverLbl = nil;
+
+    [_arrow removeFromSuperview];
+    _arrow = nil;
 }
 
 - (void)showPopover:(NSString *)text at:(UIView *)view {
@@ -160,6 +164,11 @@
     }
     _popoverLbl.bottom = view.top - 3;
     [self addSubview:_popoverLbl];
+
+    _arrow = [[UIImageView alloc] initWithImage:[UIImage arrowImageWithSize:CGSizeMake(10, 5) direction:TTArrowDirectionDown color:_popoverLbl.backgroundColor]];
+    _arrow.top = _popoverLbl.bottom;
+    _arrow.centerX = _popoverLbl.centerX;
+    [self addSubview:_arrow];
 }
 
 - (void)dayTapped:(UITapGestureRecognizer *)gesture {
