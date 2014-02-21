@@ -176,7 +176,7 @@
 
     int day = gesture.view.tag;
     NSCalendar *calendar= [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
-    NSDateComponents *comps = [calendar components:NSCalendarUnitYear | NSCalendarUnitMonth fromDate:_date];
+    NSDateComponents *comps = [calendar components:kCFCalendarUnitYear | kCFCalendarUnitMonth fromDate:_date];
     NSString *key = [NSString stringWithFormat:@"%d/%02d/%02d", comps.year, comps.month, day];
     NSString *text = _model[key];
     if ([text length]) {
@@ -186,7 +186,7 @@
 
 - (void)pickMonth:(NSDate *)date {
     NSCalendar *calendar= [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
-    NSDateComponents *comps = [calendar components:NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay fromDate:date];
+    NSDateComponents *comps = [calendar components:kCFCalendarUnitYear | kCFCalendarUnitMonth | kCFCalendarUnitDay fromDate:date];
     if (comps.day == 1) {
         _date = date;
     } else {
@@ -199,14 +199,14 @@
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
 
     NSString *lang = [[NSUserDefaults standardUserDefaults] stringForKey:kPersistPreferredLanguage];
-    formatter.locale = [NSLocale localeWithLocaleIdentifier:lang];
+    formatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:lang];
     _monthLbl.text = [formatter shortMonthSymbols][comps.month - 1];
-    NSInteger weekday = [calendar components:NSCalendarUnitWeekday fromDate:_date].weekday;
+    NSInteger weekday = [calendar components:kCFCalendarUnitWeekday fromDate:_date].weekday;
 
     NSDate *today = [NSDate date];
-    NSDateComponents *compsToday = [calendar components:NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay fromDate:today];
+    NSDateComponents *compsToday = [calendar components:kCFCalendarUnitYear | kCFCalendarUnitMonth | kCFCalendarUnitDay fromDate:today];
 
-    NSUInteger totalDays = [calendar rangeOfUnit:NSCalendarUnitDay inUnit:NSCalendarUnitMonth forDate:_date].length;
+    NSUInteger totalDays = [calendar rangeOfUnit:NSDayCalendarUnit inUnit:NSMonthCalendarUnit forDate:_date].length;
 
     CGFloat height = 0;
     for (int i = 0; i < [_dayViews count]; ++i) {
