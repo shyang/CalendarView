@@ -198,8 +198,7 @@
     _yearLbl.text = [NSString stringWithFormat:@"%d", comps.year];
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
 
-    NSString *lang = [[NSUserDefaults standardUserDefaults] stringForKey:kPersistPreferredLanguage];
-    formatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:lang];
+    formatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"zh_CN"];
     _monthLbl.text = [formatter shortMonthSymbols][comps.month - 1];
     NSInteger weekday = [calendar components:kCFCalendarUnitWeekday fromDate:_date].weekday;
 
