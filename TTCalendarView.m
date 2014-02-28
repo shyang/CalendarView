@@ -179,7 +179,10 @@
     NSDateComponents *comps = [calendar components:kCFCalendarUnitYear | kCFCalendarUnitMonth fromDate:_date];
     NSString *key = [NSString stringWithFormat:@"%d/%02d/%02d", comps.year, comps.month, day];
     NSString *text = _model[key];
-    if ([text length]) {
+    if (text) {
+        if ([text isKindOfClass:[NSNumber class]]) {
+            text = [SLGlobal format:[text doubleValue]];
+        }
         [self showPopover:[NSString stringWithFormat:NSLocalizedString(@"还款金额\n%@", nil), text] at:gesture.view];
     }
 }
@@ -228,7 +231,7 @@
         if ([_date compare:today] == NSOrderedDescending || (comps.year == compsToday.year && comps.month == compsToday.month && day > compsToday.day)) {
             lbl.backgroundColor = [UIColor clearColor];
             lbl.textColor = lbl.borderColor = [UIColor colorWithWhite:0.2667 alpha:1];
-            if ([text length]) {
+            if (text) {
                 lbl.borderColor = lbl.textColor = [UIColor colorWithRed:0.2667 green:0.5255 blue:0.7020 alpha:1];
                 lbl.layer.borderWidth = 3;
             } else {
@@ -236,7 +239,7 @@
             }
         } else {
             lbl.layer.borderWidth = 0;
-            if ([text length]) {
+            if (text) {
                 lbl.backgroundColor = [UIColor colorWithRed:0.2667 green:0.5255 blue:0.7020 alpha:1];
                 lbl.textColor = [UIColor whiteColor];
             } else {
