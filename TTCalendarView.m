@@ -174,10 +174,10 @@
 - (void)dayTapped:(UITapGestureRecognizer *)gesture {
     [self hidePopover];
 
-    int day = gesture.view.tag;
+    long day = gesture.view.tag;
     NSCalendar *calendar= [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
     NSDateComponents *comps = [calendar components:kCFCalendarUnitYear | kCFCalendarUnitMonth fromDate:_date];
-    NSString *key = [NSString stringWithFormat:@"%d/%02d/%02d", comps.year, comps.month, day];
+    NSString *key = [NSString stringWithFormat:@"%ld/%02ld/%02ld", (long)comps.year, (long)comps.month, day];
     NSString *text = _model[key];
     if (text) {
         if ([text isKindOfClass:[NSNumber class]]) {
@@ -198,12 +198,12 @@
         _date = [calendar dateByAddingComponents:backToDay1 toDate:date options:0]; // always the first day of a month
     }
 
-    _yearLbl.text = [NSString stringWithFormat:@"%d", comps.year];
+    _yearLbl.text = [NSString stringWithFormat:@"%ld", (long)comps.year];
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
 
     formatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"zh_CN"];
     _monthLbl.text = [formatter shortMonthSymbols][comps.month - 1];
-    NSInteger weekday = [calendar components:kCFCalendarUnitWeekday fromDate:_date].weekday;
+    long weekday = [calendar components:NSWeekdayCalendarUnit fromDate:_date].weekday;
 
     NSDate *today = [NSDate date];
     NSDateComponents *compsToday = [calendar components:kCFCalendarUnitYear | kCFCalendarUnitMonth | kCFCalendarUnitDay fromDate:today];
@@ -220,11 +220,11 @@
         lbl.hidden = NO;
         lbl.alpha = 1;
 
-        NSUInteger day = i - (weekday - 1) + 1;
-        lbl.text = [NSString stringWithFormat:@"%d", day];
+        long day = i - (weekday - 1) + 1;
+        lbl.text = [NSString stringWithFormat:@"%ld", day];
 
         // four sytle of a day label: past or future, has repayment or not
-        NSString *key = [NSString stringWithFormat:@"%d/%02d/%02d", comps.year, comps.month, day];
+        NSString *key = [NSString stringWithFormat:@"%ld/%02ld/%02ld", (long)comps.year, (long)comps.month, day];
         NSString *text = _model[key];
         lbl.tag = day; // to recontruct a date
 
