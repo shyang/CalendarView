@@ -88,6 +88,7 @@
                 lbl.borderColor = [UIColor grayColor];
                 lbl.textAlignment = NSTextAlignmentCenter;
                 lbl.userInteractionEnabled = YES;
+                lbl.layer.masksToBounds = YES; // for ios 7.1
                 [lbl addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dayTapped:)]];
                 [self addSubview:lbl];
                 [_dayViews addObject:lbl];
