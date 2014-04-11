@@ -28,14 +28,14 @@
 
         UIButton *leftBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 44, 44)];
         [leftBtn setImage:[UIImage imageNamed:@"BackArrow"] forState:UIControlStateNormal];
-        [leftBtn addTarget:self action:@selector(leftTapped) forControlEvents:UIControlEventTouchUpInside];
+        [leftBtn addTarget:self action:@selector(onLeftTapped) forControlEvents:UIControlEventTouchUpInside];
         [bar addSubview:leftBtn];
 
         UIButton *rightBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 44, 44)];
         [rightBtn setImage:[UIImage imageNamed:@"NextArrow"] forState:UIControlStateNormal];
         rightBtn.right = self.width;
         rightBtn.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
-        [rightBtn addTarget:self action:@selector(rightTapped) forControlEvents:UIControlEventTouchUpInside];
+        [rightBtn addTarget:self action:@selector(onRightTapped) forControlEvents:UIControlEventTouchUpInside];
         [bar addSubview:rightBtn];
 
         _monthLbl = [[UILabel alloc] initWithFrame:CGRectMake(leftBtn.right, 0, rightBtn.left - leftBtn.right, bar.height / 2)];
@@ -89,18 +89,18 @@
                 lbl.textAlignment = NSTextAlignmentCenter;
                 lbl.userInteractionEnabled = YES;
                 lbl.layer.masksToBounds = YES; // for ios 7.1
-                [lbl addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dayTapped:)]];
+                [lbl addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onDayTapped:)]];
                 [self addSubview:lbl];
                 [_dayViews addObject:lbl];
             }
         }
         [self pickMonth:[NSDate date]];
 
-        UISwipeGestureRecognizer *swipLeft = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(rightTapped)];
+        UISwipeGestureRecognizer *swipLeft = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(onRightTapped)];
         swipLeft.direction = UISwipeGestureRecognizerDirectionLeft;
         [self addGestureRecognizer:swipLeft];
 
-        UISwipeGestureRecognizer *swipRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(leftTapped)];
+        UISwipeGestureRecognizer *swipRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(onLeftTapped)];
         swipRight.direction = UISwipeGestureRecognizerDirectionRight;
         [self addGestureRecognizer:swipRight];
 
@@ -114,7 +114,7 @@
     return self;
 }
 
-- (void)leftTapped {
+- (void)onLeftTapped {
     [self hidePopover];
 
     [UIView animateWithDuration:.2 animations:^{
@@ -126,7 +126,7 @@
     }];
 }
 
-- (void)rightTapped {
+- (void)onRightTapped {
     [self hidePopover];
 
     [UIView animateWithDuration:.2 animations:^{
@@ -172,7 +172,7 @@
     [self addSubview:_arrow];
 }
 
-- (void)dayTapped:(UITapGestureRecognizer *)gesture {
+- (void)onDayTapped:(UITapGestureRecognizer *)gesture {
     [self hidePopover];
 
     long day = gesture.view.tag;
