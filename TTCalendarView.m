@@ -114,6 +114,7 @@
     return self;
 }
 
+#pragma mark - Private
 - (void)onLeftTapped {
     [self hidePopover];
 
