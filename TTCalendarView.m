@@ -157,7 +157,7 @@
     }
 }
 
-- (void)pickDay:(int)day {
+- (void)pickDay:(long)day {
     for (UILabel *dayLbl in _dayViews) {
         dayLbl.backgroundColor = dayLbl.tag == day ? [UIColor colorWithWhite:0.8980 alpha:1] : [UIColor clearColor];
     }
