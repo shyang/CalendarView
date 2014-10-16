@@ -187,7 +187,7 @@
     NSUInteger totalDays = [calendar rangeOfUnit:NSDayCalendarUnit inUnit:NSMonthCalendarUnit forDate:_date].length;
 
     CGFloat height = 0;
-    for (int i = 0; i < [_dayViews count]; ++i) {
+    for (int i = 0; i < _dayViews.count; ++i) {
         UILabel *lbl = _dayViews[i];
         if (i < weekday - 1) {
             lbl.hidden = YES;
