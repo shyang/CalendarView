@@ -23,10 +23,9 @@
 @property (nonatomic) CGPoint origin;
 @property (nonatomic) CGSize size;
 
-@property (nonatomic, retain) UIColor *borderColor;
+@property (nonatomic) UIColor *borderColor;
 
 // The view controller whose view contains this view.
 @property (nonatomic, readonly) UIViewController *viewController;
 
-- (BOOL)containsView:(UIView *)view;
 @end

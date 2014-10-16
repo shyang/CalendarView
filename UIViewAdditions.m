@@ -126,12 +126,5 @@
     }
     return nil;
 }
-- (BOOL)containsView:(UIView *)view {
-    for (UIView *next = view; next; next = next.superview) {
-        if (next == self) {
-            return YES;
-        }
-    }
-    return NO;
-}
+
 @end
