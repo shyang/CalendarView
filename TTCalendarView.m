@@ -146,7 +146,7 @@
 
 - (void)onDayTapped:(UITapGestureRecognizer *)gesture {
     _pickDay = gesture.view.tag;
-    NSCalendar *calendar= [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
     NSDateComponents *comps = [calendar components:kCFCalendarUnitYear | kCFCalendarUnitMonth fromDate:_date];
     NSString *key = [NSString stringWithFormat:@"%ld-%02ld-%02ld", (long)comps.year, (long)comps.month, _pickDay];
 
@@ -164,7 +164,7 @@
 }
 
 - (void)pickMonth:(NSDate *)date {
-    NSCalendar *calendar= [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
     NSDateComponents *comps = [calendar components:kCFCalendarUnitYear | kCFCalendarUnitMonth | kCFCalendarUnitDay fromDate:date];
     if (comps.day == 1) {
         _date = date;
