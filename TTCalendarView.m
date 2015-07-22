@@ -6,9 +6,8 @@
 //
 //
 
-#import "TTCalendarView.h"
 #import "NSDate+Additions.h"
-
+#import "TTCalendarView.h"
 
 @implementation TTCalendarView {
     NSMutableArray *_dayViews;
